@@ -10,7 +10,10 @@ from database import db
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
+# Create uploads directory if it doesn't exist
+os.makedirs("uploads", exist_ok=True)
+app.mount("/uploads", StaticFiles(directory="uploads", check_dir=False), name="uploads")
 
 # In-memory sessions only
 sessions = {}  # session_id: username

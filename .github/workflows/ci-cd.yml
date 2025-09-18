@@ -24,6 +24,9 @@ jobs:
         pip install -r requirements.txt
         pip install pytest pytest-asyncio httpx
     
+    - name: Create uploads directory
+      run: mkdir -p uploads
+    
     - name: Run tests
       run: pytest tests/ -v
     
