@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - Blog{% endblock %}
+
+{% block content %}
+<article class="post">
+    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+        <h1 style="color: #2c3e50; font-size: 2.2em; margin: 0;">{{ post.title }}</h1>
+        {% if user == 'admin' %}
+        <form method="post" action="/admin/delete-post/{{ post.id }}" style="margin: 0;">
+            <button type="submit" onclick="return confirm('Delete this post?')" 
+                    style="background: #e74c3c; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
+                🗑️ Delete
+            </button>
+        </form>
+        {% endif %}
+    </div>
+    <div class="post-meta" style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #eee;">
+        {{ post.created_at }}
+        {% if post.author %} • By <strong>{{ post.author }}</strong>{% endif %}
+    </div>
+    {% if post.image_path %}
+    <div style="margin: 25px 0; text-align: center;">
+        <img src="/{{ post.image_path }}" alt="Post image" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+    </div>
+    {% endif %}
+    <div class="post-content" style="font-size: 1.1em; line-height: 1.8; white-space: pre-wrap;">{{ post.content }}</div>
+</article>
+{% endblock %}

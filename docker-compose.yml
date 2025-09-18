@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  blog:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./blog.db:/app/blog.db
+    environment:
+      - ENV=production
+    restart: unless-stopped

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Create Post - Blog{% endblock %}
+
+{% block content %}
+<h2 style="color: #2c3e50; margin-bottom: 20px; font-size: 1.8em;">✏️ Create New Post</h2>
+
+<form method="post" enctype="multipart/form-data">
+    <input type="text" name="title" placeholder="📝 Enter your post title..." required>
+    <textarea name="content" placeholder="✨ Share your thoughts, ideas, and stories here..." required></textarea>
+    <div style="margin: 15px 0;">
+        <label style="display: block; margin-bottom: 5px; color: #555; font-weight: 500;">🖼️ Add Image (optional):</label>
+        <input type="file" name="image" accept="image/*" style="width: 100%; padding: 10px; border: 2px dashed #ddd; border-radius: 8px; background: #f9f9f9;">
+    </div>
+    <button type="submit" class="btn" style="width: 100%; font-size: 1.1em; margin-top: 10px;">🚀 Publish Post</button>
+</form>
+{% endblock %}

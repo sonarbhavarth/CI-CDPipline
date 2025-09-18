@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Blog{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            line-height: 1.6; 
+            color: #333; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            padding: 20px;
+            background: rgba(255,255,255,0.95);
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .navbar {
+            background: rgba(44, 62, 80, 0.95);
+            padding: 15px 0;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .nav-brand {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: background 0.3s;
+        }
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 30px;
+        }
+        .header h1 { 
+            font-size: 2.5em; 
+            color: #2c3e50;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .header h1 a { 
+            text-decoration: none; 
+            color: inherit;
+            transition: color 0.3s;
+        }
+        .header h1 a:hover { color: #3498db; }
+        .post { 
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .post:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .post-title { 
+            color: #2c3e50;
+            text-decoration: none;
+            font-size: 1.4em;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .post-title:hover { color: #3498db; }
+        .post-meta { 
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+        .post-meta::before {
+            content: "📅";
+            margin-right: 8px;
+        }
+        .post-content {
+            margin-top: 15px;
+            color: #555;
+            line-height: 1.7;
+        }
+        .btn { 
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 25px;
+            display: inline-block;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+        .btn-create {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+        .btn-create:hover {
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+        .back-link {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 20px;
+            display: inline-block;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: #2980b9; }
+        .back-link::before {
+            content: "← ";
+        }
+        form { 
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        input, textarea { 
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        textarea { 
+            height: 250px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        .no-posts {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        .create-btn-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        @media (max-width: 768px) {
+            .container { padding: 10px; }
+            .header h1 { font-size: 2em; }
+            .post { padding: 20px; }
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .nav-links {
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="/" class="nav-brand">✨ My Blog</a>
+                <ul class="nav-links">
+                    <li><a href="/">🏠 Home</a></li>
+                    {% if user %}
+                        <li><a href="/create">✏️ Write</a></li>
+                        {% if user == 'admin' %}
+                            <li><a href="/admin">🔧 Admin</a></li>
+                        {% endif %}
+                        <li><span style="color: #bdc3c7;">👋 {{ user }}</span></li>
+                        <li><a href="/logout">🚪 Logout</a></li>
+                    {% else %}
+                        <li><a href="/login">🔐 Login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

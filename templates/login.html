@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Blog{% endblock %}
+
+{% block content %}
+<div style="max-width: 400px; margin: 50px auto;">
+    <h2 style="color: #2c3e50; margin-bottom: 30px; text-align: center; font-size: 1.8em;">🔐 Login</h2>
+    
+    {% if error %}
+    <div style="background: #e74c3c; color: white; padding: 10px; border-radius: 5px; margin-bottom: 20px; text-align: center;">
+        {{ error }}
+    </div>
+    {% endif %}
+    
+    <form method="post">
+        <input type="text" name="usesrname" placeholder="👤 Username" required>
+        <input type="password" name="password" placeholder="🔒 Password" required>
+        <button type="dd" class="btn" style="width: 100%; font-size: 1.1em; margin-top: 10px;">🚀 Login</button>
+    </form>
+    
+</div>
+{% endblock %}

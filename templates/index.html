@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if posts %}
+    {% for post in posts %}
+    <article class="post">
+        <h2><a href="/post/{{ post.id }}" class="post-title">{{ post.title }}</a></h2>
+        <div class="post-meta">
+            {{ post.created_at }}
+            {% if post.author %} • By <strong>{{ post.author }}</strong>{% endif %}
+        </div>
+        {% if post.image_path %}
+        <div style="margin: 15px 0;">
+            <img src="/{{ post.image_path }}" alt="Post image" style="max-width: 100%; height: 200px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        </div>
+        {% endif %}
+        <div class="post-content">
+            {{ post.content[:200] }}{% if post.content|length > 200 %}...
+            <a href="/post/{{ post.id }}" style="color: #3498db; font-weight: 500;">Read more</a>
+            {% endif %}
+        </div>
+    </article>
+    {% endfor %}
+{% else %}
+    <div class="no-posts">
+        <h2>📝 No posts yet</h2>
+        <p>Start sharing your thoughts with the world!</p>
+        {% if user %}
+            <a href="/create" class="btn btn-create" style="margin-top: 20px;">Write your first post</a>
+        {% else %}
+            <a href="/login" class="btn" style="margin-top: 20px;">Login to write posts</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}

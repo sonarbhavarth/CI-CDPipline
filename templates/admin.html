@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel - Blog{% endblock %}
+
+{% block content %}
+<h2 style="color: #2c3e50; margin-bottom: 30px; font-size: 1.8em;">🛠️ Admin Control Panel</h2>
+
+<!-- Posts Management -->
+<div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 30px;">
+    <h3 style="color: #e74c3c; margin-bottom: 20px;">📝 Posts Management</h3>
+    {% if posts %}
+        {% for post in posts %}
+        <div style="border: 1px solid #eee; padding: 15px; margin: 10px 0; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <strong>{{ post.title }}</strong>
+                {% if post.image_path %}<span style="color: #3498db; margin-left: 8px;">🖼️</span>{% endif %}<br>
+                <small style="color: #666;">By {{ post.author }} - {{ post.created_at }}</small>
+            </div>
+            <form method="post" action="/admin/delete-post/{{ post.id }}" style="margin: 0;">
+                <button type="submit" onclick="return confirm('Delete this post?')" 
+                        style="background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                    🗑️ Delete
+                </button>
+            </form>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p style="color: #666;">No posts found.</p>
+    {% endif %}
+</div>
+
+<!-- User Management -->
+<div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 30px;">
+    <h3 style="color: #3498db; margin-bottom: 20px;">👥 User Management</h3>
+    
+    <!-- Create User Form -->
+    <form method="post" action="/admin/create-user" style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+        <h4 style="margin-bottom: 10px;">➕ Create New User</h4>
+        <div style="display: flex; gap: 10px; align-items: end;">
+            <input type="text" name="username" placeholder="Username" required style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 3px;">
+            <input type="password" name="password" placeholder="Password" required style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 3px;">
+            <button type="submit" style="background: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 3px; cursor: pointer;">Create</button>
+        </div>
+    </form>
+    
+    <!-- Users List -->
+    {% if users %}
+        {% for user in users %}
+        <div style="border: 1px solid #eee; padding: 15px; margin: 10px 0; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <strong>{{ user.username }}</strong>
+                {% if user.username == 'admin' %}<span style="color: #e74c3c; font-size: 0.8em;">(Protected)</span>{% endif %}
+            </div>
+            {% if user.username != 'admin' %}
+            <form method="post" action="/admin/delete-user/{{ user.username }}" style="margin: 0;">
+                <button type="submit" onclick="return confirm('Delete user {{ user.username }}?')" 
+                        style="background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                    🗑️ Delete
+                </button>
+            </form>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p style="color: #666;">No users found.</p>
+    {% endif %}
+</div>
+
+<!-- System Stats -->
+<div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+    <h3 style="color: #9b59b6; margin-bottom: 20px;">📊 System Statistics</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+        <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+            <div style="font-size: 2em; color: #3498db;">{{ posts|length }}</div>
+            <div style="color: #666;">Total Posts</div>
+        </div>
+        <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+            <div style="font-size: 2em; color: #27ae60;">{{ users|length }}</div>
+            <div style="color: #666;">Total Users</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
