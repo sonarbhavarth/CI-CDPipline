@@ -30,3 +30,8 @@ def test_basic_functionality():
     
     # Test that functions exist
     assert callable(get_current_user)
+
+def test_intentional_failure():
+    """Test to verify CI/CD catches failures"""
+    # This will fail to test CI/CD error handling
+    assert False, "Intentional test failure to verify CI/CD pipeline"
