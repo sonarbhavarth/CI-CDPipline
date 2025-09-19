@@ -81,3 +81,8 @@ sudo systemctl restart nginx
 echo "✅ Deployment completed!"
 echo "🌐 Your blog is now running on http://your-ec2-ip"
 echo "📊 Check status: sudo systemctl status blog"
+echo ""
+echo "🔄 To enable auto-deployment from GitHub:"
+echo "1. Run: ./webhook-setup.sh"
+echo "2. Add webhook in GitHub repo settings"
+echo "3. Webhook URL: http://your-ec2-ip/webhook"
