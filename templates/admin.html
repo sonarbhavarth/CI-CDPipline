@@ -6,8 +6,8 @@
 <h2 style="color: #2c3e50; margin-bottom: 30px; font-size: 1.8em;">🛠️ Admin Control Panel</h2>
 
 <!-- Posts Management -->
-<div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 30px;">
-    <h3 style="color: #e74c3c; margin-bottom: 20px;">📝 Posts Management</h3>
+<div style="background: linear-gradient(145deg, #ffffff, #f0f0f0); padding: 25px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6); margin-bottom: 30px; transform: perspective(1000px) rotateX(-2deg); transition: all 0.4s ease;" onmouseover="this.style.transform='perspective(1000px) rotateX(0deg) translateY(-5px)'" onmouseout="this.style.transform='perspective(1000px) rotateX(-2deg)'">
+    <h3 style="color: #e74c3c; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">📝 Posts Management</h3>
     {% if posts %}
         {% for post in posts %}
         <div style="border: 1px solid #eee; padding: 15px; margin: 10px 0; border-radius: 5px; display: flex; justify-content: space-between; align-items: center;">
@@ -30,8 +30,8 @@
 </div>
 
 <!-- User Management -->
-<div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 30px;">
-    <h3 style="color: #3498db; margin-bottom: 20px;">👥 User Management</h3>
+<div style="background: linear-gradient(145deg, #ffffff, #f0f0f0); padding: 25px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6); margin-bottom: 30px; transform: perspective(1000px) rotateX(-2deg); transition: all 0.4s ease;" onmouseover="this.style.transform='perspective(1000px) rotateX(0deg) translateY(-5px)'" onmouseout="this.style.transform='perspective(1000px) rotateX(-2deg)'">
+    <h3 style="color: #3498db; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">👥 User Management</h3>
     
     <!-- Create User Form -->
     <form method="post" action="/admin/create-user" style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
@@ -67,16 +67,16 @@
 </div>
 
 <!-- System Stats -->
-<div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-    <h3 style="color: #9b59b6; margin-bottom: 20px;">📊 System Statistics</h3>
+<div style="background: linear-gradient(145deg, #ffffff, #f0f0f0); padding: 25px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6); transform: perspective(1000px) rotateX(-2deg); transition: all 0.4s ease;" onmouseover="this.style.transform='perspective(1000px) rotateX(0deg) translateY(-5px)'" onmouseout="this.style.transform='perspective(1000px) rotateX(-2deg)'">
+    <h3 style="color: #9b59b6; margin-bottom: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">📊 System Statistics</h3>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-        <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 5px;">
-            <div style="font-size: 2em; color: #3498db;">{{ posts|length }}</div>
-            <div style="color: #666;">Total Posts</div>
+        <div style="text-align: center; padding: 20px; background: linear-gradient(145deg, #f8f9fa, #e9ecef); border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); transform: perspective(500px) rotateX(-5deg); transition: all 0.3s ease;" onmouseover="this.style.transform='perspective(500px) rotateX(0deg) translateZ(15px)'" onmouseout="this.style.transform='perspective(500px) rotateX(-5deg)'">
+            <div style="font-size: 2.5em; color: #3498db; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">{{ posts|length }}</div>
+            <div style="color: #666; font-weight: 500;">Total Posts</div>
         </div>
-        <div style="text-align: center; padding: 15px; background: #f8f9fa; border-radius: 5px;">
-            <div style="font-size: 2em; color: #27ae60;">{{ users|length }}</div>
-            <div style="color: #666;">Total Users</div>
+        <div style="text-align: center; padding: 20px; background: linear-gradient(145deg, #f8f9fa, #e9ecef); border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); transform: perspective(500px) rotateX(-5deg); transition: all 0.3s ease;" onmouseover="this.style.transform='perspective(500px) rotateX(0deg) translateZ(15px)'" onmouseout="this.style.transform='perspective(500px) rotateX(-5deg)'">
+            <div style="font-size: 2.5em; color: #27ae60; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">{{ users|length }}</div>
+            <div style="color: #666; font-weight: 500;">Total Users</div>
         </div>
     </div>
 </div>

@@ -18,14 +18,26 @@
             padding: 20px;
             background: rgba(255,255,255,0.95);
             min-height: 100vh;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            box-shadow: 0 0 50px rgba(0,0,0,0.1);
+            transform: perspective(1200px) rotateY(0deg);
+            transition: all 0.6s ease;
+        }
+        .container:hover {
+            box-shadow: 0 0 60px rgba(0,0,0,0.15);
         }
         .navbar {
-            background: rgba(44, 62, 80, 0.95);
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.95), rgba(52, 73, 94, 0.95));
             padding: 15px 0;
             margin-bottom: 20px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transform: perspective(1000px) rotateX(0deg);
+            transition: all 0.3s ease;
+        }
+        .navbar:hover {
+            transform: perspective(1000px) rotateX(-1deg);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
         }
         .nav-container {
             display: flex;
@@ -75,15 +87,17 @@
         .header h1 a:hover { color: #3498db; }
         .post { 
             background: white;
-            border-radius: 10px;
+            border-radius: 15px;
             padding: 25px;
             margin: 20px 0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12), 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+            transform-style: preserve-3d;
         }
         .post:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: perspective(1000px) rotateX(-2deg) rotateY(2deg) translateY(-10px) translateZ(20px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2), 0 10px 25px rgba(0,0,0,0.15);
         }
         .post-title { 
             color: #2c3e50;
@@ -117,14 +131,30 @@
             border-radius: 25px;
             display: inline-block;
             font-weight: 500;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border: none;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+            transform: perspective(500px) rotateX(0deg);
+            position: relative;
+            overflow: hidden;
         }
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+            transform: perspective(500px) rotateX(-10deg) translateY(-3px) translateZ(10px);
+            box-shadow: 0 15px 35px rgba(52, 152, 219, 0.4);
+        }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        .btn:hover::before {
+            left: 100%;
         }
         .btn-create {
             background: linear-gradient(45deg, #e74c3c, #c0392b);
@@ -148,22 +178,32 @@
         form { 
             background: white;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6);
             margin: 20px 0;
+            transform: perspective(800px) rotateX(0deg);
+            transition: all 0.3s ease;
+        }
+        form:hover {
+            transform: perspective(800px) rotateX(-1deg);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.8);
         }
         input, textarea { 
             width: 100%;
             padding: 15px;
             margin: 10px 0;
             border: 2px solid #ecf0f1;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 16px;
-            transition: border-color 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            transform: perspective(500px) rotateX(0deg);
         }
         input:focus, textarea:focus {
             outline: none;
             border-color: #3498db;
+            transform: perspective(500px) rotateX(-2deg) translateZ(5px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.2), inset 0 2px 4px rgba(0,0,0,0.05);
         }
         textarea { 
             height: 250px;
