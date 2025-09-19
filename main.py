@@ -60,9 +60,10 @@ async def delete_post(request: Request, post_id: int):
     return RedirectResponse(url="/admin", status_code=303)
 
 @app.post("/admin/create-user")
-async def create_user(request: Request, username: str = Form(...), password: str = Form(...)):
+async def create_user(request: Request, username: str = Form(None), password: str = Form(None)):
     require_admin(request)
-    success = db.create_user(username, password)
+    if username and password:
+        success = db.create_user(username, password)
     return RedirectResponse(url="/admin", status_code=303)
 
 @app.post("/admin/delete-user/{username}")
@@ -76,8 +77,8 @@ async def login_form(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
 @app.post("/login")
-async def login(request: Request, username: str = Form(...), password: str = Form(...)):
-    if db.verify_user(username, password):
+async def login(request: Request, username: str = Form(None), password: str = Form(None)):
+    if username and password and db.verify_user(username, password):
         session_id = f"{username}_{datetime.now().timestamp()}"
         sessions[session_id] = username
         response = RedirectResponse(url="/", status_code=303)
@@ -101,9 +102,12 @@ async def create_form(request: Request):
     return templates.TemplateResponse("create.html", {"request": request, "user": user})
 
 @app.post("/create")
-async def create_post(request: Request, title: str = Form(...), content: str = Form(...), image: UploadFile = File(None)):
+async def create_post(request: Request, title: str = Form(None), content: str = Form(None), image: UploadFile = File(None)):
     require_auth(request)
     user = get_current_user(request)
+    
+    if not title or not content:
+        return RedirectResponse(url="/create", status_code=303)
     
     image_path = None
     if image and image.filename:
