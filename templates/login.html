@@ -13,10 +13,15 @@
     {% endif %}
     
     <form method="post">
-        <input type="text" name="usesrname" placeholder="👤 Username" required>
+        <input type="text" name="username" placeholder="👤 Username" required>
         <input type="password" name="password" placeholder="🔒 Password" required>
-        <button type="dd" class="btn" style="width: 100%; font-size: 1.1em; margin-top: 10px;">🚀 Login</button>
+        <button type="submit" class="btn" style="width: 100%; font-size: 1.1em; margin-top: 10px;">🚀 Login</button>
     </form>
     
+    <div style="text-align: center; margin-top: 20px; color: #7f8c8d; font-size: 0.9em;">
+        <p>Demo accounts:</p>
+        <p><strong>admin</strong> / admin123</p>
+        <p><strong>user</strong> / 123</p>
+    </div>
 </div>
 {% endblock %}

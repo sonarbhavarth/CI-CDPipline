@@ -29,6 +29,8 @@ def require_auth(request: Request):
 
 def require_admin(request: Request):
     user = get_current_user(request)
+    if not user:
+        raise HTTPException(status_code=302, headers={"Location": "/login"})
     if user != 'admin':
         raise HTTPException(status_code=403, detail="Admin access required")
 
@@ -48,10 +50,15 @@ async def view_post(request: Request, post_id: int):
 
 @app.get("/admin", response_class=HTMLResponse)
 async def admin_panel(request: Request):
-    require_admin(request)
+    user = get_current_user(request)
+    if not user:
+        return RedirectResponse(url="/login", status_code=303)
+    if user != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
     posts = db.get_all_posts()
     users = db.get_all_users()
-    return templates.TemplateResponse("admin.html", {"request": request, "posts": posts, "users": users, "user": "admin"})
+    return templates.TemplateResponse("admin.html", {"request": request, "posts": posts, "users": users, "user": user})
 
 @app.post("/admin/delete-post/{post_id}")
 async def delete_post(request: Request, post_id: int):
@@ -122,3 +129,17 @@ async def create_post(request: Request, title: str = Form(None), content: str = 
     
     db.create_post(title, content, user, image_path)
     return RedirectResponse(url="/", status_code=303)
+
+@app.post("/like/{post_id}")
+async def toggle_like(request: Request, post_id: int):
+    user = get_current_user(request)
+    if user:
+        db.toggle_like(post_id, user)
+    return RedirectResponse(url=f"/post/{post_id}", status_code=303)
+
+@app.post("/comment/{post_id}")
+async def add_comment(request: Request, post_id: int, content: str = Form(None)):
+    user = get_current_user(request)
+    if user and content:
+        db.add_comment(post_id, user, content)
+    return RedirectResponse(url=f"/post/{post_id}", status_code=303)

@@ -25,5 +25,43 @@
     </div>
     {% endif %}
     <div class="post-content" style="font-size: 1.1em; line-height: 1.8; white-space: pre-wrap;">{{ post.content }}</div>
+    
+    <!-- Like, Comment, Share Section -->
+    <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+        <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
+            {% if user %}
+            <form method="post" action="/like/{{ post.id }}" style="margin: 0;">
+                <button type="submit" style="background: none; border: none; cursor: pointer; font-size: 1.2em;">❤️ {{ post.likes_count }}</button>
+            </form>
+            {% else %}
+            <span style="font-size: 1.2em;">❤️ {{ post.likes_count }}</span>
+            {% endif %}
+            <button onclick="navigator.share ? navigator.share({title: '{{ post.title }}', url: window.location.href}) : navigator.clipboard.writeText(window.location.href).then(() => alert('Link copied!'))" style="background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">🔗 Share</button>
+        </div>
+        
+        <!-- Comments Section -->
+        <div>
+            <h4 style="margin-bottom: 15px;">💬 Comments</h4>
+            
+            {% if user %}
+            <form method="post" action="/comment/{{ post.id }}" style="margin-bottom: 20px;">
+                <textarea name="content" placeholder="Write a comment..." required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; resize: vertical; height: 80px;"></textarea>
+                <button type="submit" style="background: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 5px; margin-top: 10px; cursor: pointer;">Post Comment</button>
+            </form>
+            {% endif %}
+            
+            {% if post.comments %}
+                {% for comment in post.comments %}
+                <div style="background: white; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 3px solid #3498db;">
+                    <div style="font-weight: bold; color: #2c3e50; margin-bottom: 5px;">{{ comment.username }}</div>
+                    <div style="color: #555; margin-bottom: 5px;">{{ comment.content }}</div>
+                    <div style="color: #999; font-size: 0.8em;">{{ comment.created_at }}</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p style="color: #666; font-style: italic;">No comments yet. Be the first to comment!</p>
+            {% endif %}
+        </div>
+    </div>
 </article>
 {% endblock %}
