@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}My Analytics - Blog{% endblock %}
+
+{% block content %}
+<h2 style="color: #2c3e50; margin-bottom: 30px; font-size: 1.8em;">📊 My Post Analytics</h2>
+
+{% if posts %}
+    {% for post in posts %}
+    <div class="post" style="margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: start;">
+            <div style="flex: 1;">
+                <h3><a href="/post/{{ post.id }}" class="post-title">{{ post.title }}</a></h3>
+                <div class="post-meta">{{ post.created_at }}</div>
+            </div>
+            <a href="/analytics/{{ post.id }}" class="btn" style="margin-left: 15px;">📈 Details</a>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 15px;">
+            <div style="text-align: center; padding: 10px; background: #e3f2fd; border-radius: 8px;">
+                <div style="font-size: 1.5em; color: #1976d2;">{{ post.views }}</div>
+                <div style="font-size: 0.8em; color: #666;">👁️ Views</div>
+            </div>
+            <div style="text-align: center; padding: 10px; background: #fce4ec; border-radius: 8px;">
+                <div style="font-size: 1.5em; color: #c2185b;">{{ post.likes }}</div>
+                <div style="font-size: 0.8em; color: #666;">❤️ Likes</div>
+            </div>
+            <div style="text-align: center; padding: 10px; background: #e8f5e8; border-radius: 8px;">
+                <div style="font-size: 1.5em; color: #388e3c;">{{ post.comments }}</div>
+                <div style="font-size: 0.8em; color: #666;">💬 Comments</div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="no-posts">
+        <h3>📝 No posts yet</h3>
+        <p>Create your first post to see analytics!</p>
+        <a href="/create" class="btn" style="margin-top: 20px;">Write your first post</a>
+    </div>
+{% endif %}
+{% endblock %}

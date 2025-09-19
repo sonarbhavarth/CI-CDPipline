@@ -20,6 +20,7 @@
             {% endif %}
         </div>
         <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; display: flex; gap: 15px; align-items: center;">
+            <span style="color: #666; font-size: 0.9em;">👁️ Views</span>
             <span style="color: #666; font-size: 0.9em;">❤️ {{ post.likes_count }} likes</span>
             <a href="/post/{{ post.id }}" style="color: #666; text-decoration: none; font-size: 0.9em;">💬 Comments</a>
             <button onclick="navigator.share ? navigator.share({title: '{{ post.title }}', url: window.location.origin + '/post/{{ post.id }}'}) : navigator.clipboard.writeText(window.location.origin + '/post/{{ post.id }}')" style="background: none; border: none; color: #666; cursor: pointer; font-size: 0.9em;">🔗 Share</button>

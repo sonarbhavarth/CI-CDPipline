@@ -47,6 +47,21 @@ class Database:
                     created_at TEXT
                 )
             """)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS sessions (
+                    session_id TEXT PRIMARY KEY,
+                    username TEXT,
+                    created_at TEXT,
+                    expires_at TEXT
+                )
+            """)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS views (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    post_id INTEGER,
+                    viewed_at TEXT
+                )
+            """)
             # Insert default users if they don't exist
             conn.execute("INSERT OR IGNORE INTO users VALUES ('admin', 'admin123')")
             conn.execute("INSERT OR IGNORE INTO users VALUES ('user', '123')")
@@ -145,5 +160,85 @@ class Database:
             conn.row_factory = sqlite3.Row
             cursor = conn.execute("SELECT * FROM comments WHERE post_id = ? ORDER BY id DESC", (post_id,))
             return [dict(row) for row in cursor.fetchall()]
+    
+    def add_view(self, post_id: int):
+        with sqlite3.connect(self.db_path) as conn:
+            conn.execute(
+                "INSERT INTO views (post_id, viewed_at) VALUES (?, ?)",
+                (post_id, datetime.now().strftime("%Y-%m-%d %H:%M"))
+            )
+    
+    def get_post_analytics(self, post_id: int) -> Dict:
+        with sqlite3.connect(self.db_path) as conn:
+            # Views count
+            cursor = conn.execute("SELECT COUNT(*) FROM views WHERE post_id = ?", (post_id,))
+            views = cursor.fetchone()[0] if cursor.fetchone() else 0
+            
+            # Likes count
+            cursor = conn.execute("SELECT COUNT(*) FROM likes WHERE post_id = ?", (post_id,))
+            likes = cursor.fetchone()[0]
+            
+            # Comments count
+            cursor = conn.execute("SELECT COUNT(*) FROM comments WHERE post_id = ?", (post_id,))
+            comments = cursor.fetchone()[0]
+            
+            # Who liked the post
+            cursor = conn.execute("SELECT username FROM likes WHERE post_id = ?", (post_id,))
+            liked_by = [row[0] for row in cursor.fetchall()]
+            
+            return {
+                'views': views,
+                'likes': likes,
+                'comments': comments,
+                'liked_by': liked_by
+            }
+    
+    def create_session(self, session_id: str, username: str, expires_at: str = None):
+        with sqlite3.connect(self.db_path) as conn:
+            conn.execute(
+                "INSERT OR REPLACE INTO sessions (session_id, username, created_at, expires_at) VALUES (?, ?, ?, ?)",
+                (session_id, username, datetime.now().strftime("%Y-%m-%d %H:%M"), expires_at)
+            )
+    
+    def get_session(self, session_id: str) -> Optional[str]:
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.execute(
+                "SELECT username, expires_at FROM sessions WHERE session_id = ?", 
+                (session_id,)
+            )
+            row = cursor.fetchone()
+            if row:
+                username, expires_at = row
+                # Check if session has expired
+                if expires_at:
+                    expire_time = datetime.strptime(expires_at, "%Y-%m-%d %H:%M")
+                    if datetime.now() > expire_time:
+                        self.delete_session(session_id)
+                        return None
+                return username
+            return None
+    
+    def delete_session(self, session_id: str):
+        with sqlite3.connect(self.db_path) as conn:
+            conn.execute("DELETE FROM sessions WHERE session_id = ?", (session_id,))
+    
+    def cleanup_expired_sessions(self):
+        with sqlite3.connect(self.db_path) as conn:
+            conn.execute(
+                "DELETE FROM sessions WHERE expires_at IS NOT NULL AND expires_at < ?",
+                (datetime.now().strftime("%Y-%m-%d %H:%M"),)
+            )
+    
+    def get_user_posts_analytics(self, username: str) -> List[Dict]:
+        with sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.execute("SELECT * FROM posts WHERE author = ? ORDER BY id DESC", (username,))
+            posts = [dict(row) for row in cursor.fetchall()]
+            
+            for post in posts:
+                analytics = self.get_post_analytics(post['id'])
+                post.update(analytics)
+            
+            return posts
 
 db = Database()

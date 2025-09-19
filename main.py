@@ -20,7 +20,11 @@ sessions = {}  # session_id: username
 
 def get_current_user(request: Request) -> Optional[str]:
     session_id = request.cookies.get("session_id")
-    return sessions.get(session_id) if session_id else None
+    if session_id:
+        # Clean up expired sessions periodically
+        db.cleanup_expired_sessions()
+        return db.get_session(session_id)
+    return None
 
 def require_auth(request: Request):
     user = get_current_user(request)
@@ -45,6 +49,10 @@ async def view_post(request: Request, post_id: int):
     post = db.get_post(post_id)
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
+    
+    # Track view
+    db.add_view(post_id)
+    
     user = get_current_user(request)
     return templates.TemplateResponse("post.html", {"request": request, "post": post, "user": user})
 
@@ -84,22 +92,57 @@ async def login_form(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
 @app.post("/login")
-async def login(request: Request, username: str = Form(None), password: str = Form(None)):
+async def login(request: Request, username: str = Form(None), password: str = Form(None), remember_me: str = Form(None)):
     if username and password and db.verify_user(username, password):
-        session_id = f"{username}_{datetime.now().timestamp()}"
-        sessions[session_id] = username
+        import uuid
+        session_id = str(uuid.uuid4())
+        
+        # Set expiration for persistent sessions
+        expires_at = None
+        if remember_me:
+            from datetime import timedelta
+            expires_at = (datetime.now() + timedelta(days=30)).strftime("%Y-%m-%d %H:%M")
+        
+        # Store session in database
+        db.create_session(session_id, username, expires_at)
+        
         response = RedirectResponse(url="/", status_code=303)
-        response.set_cookie("session_id", session_id)
+        
+        # Set persistent cookie if remember me is checked
+        if remember_me:
+            response.set_cookie(
+                "session_id", 
+                session_id, 
+                max_age=30*24*60*60,  # 30 days in seconds
+                httponly=True,
+                secure=False,  # Set to True in production with HTTPS
+                samesite="lax"
+            )
+        else:
+            # Session cookie (expires when browser closes)
+            response.set_cookie(
+                "session_id", 
+                session_id,
+                httponly=True,
+                secure=False,
+                samesite="lax"
+            )
         return response
     return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials"})
 
 @app.get("/logout")
 async def logout(request: Request):
     session_id = request.cookies.get("session_id")
-    if session_id in sessions:
-        del sessions[session_id]
+    if session_id:
+        db.delete_session(session_id)
     response = RedirectResponse(url="/", status_code=303)
-    response.delete_cookie("session_id")
+    # Delete cookie with same settings as when it was set
+    response.delete_cookie(
+        "session_id",
+        httponly=True,
+        secure=False,
+        samesite="lax"
+    )
     return response
 
 @app.get("/create", response_class=HTMLResponse)
@@ -143,3 +186,22 @@ async def add_comment(request: Request, post_id: int, content: str = Form(None))
     if user and content:
         db.add_comment(post_id, user, content)
     return RedirectResponse(url=f"/post/{post_id}", status_code=303)
+
+@app.get("/analytics", response_class=HTMLResponse)
+async def user_analytics(request: Request):
+    require_auth(request)
+    user = get_current_user(request)
+    posts = db.get_user_posts_analytics(user)
+    return templates.TemplateResponse("analytics.html", {"request": request, "posts": posts, "user": user})
+
+@app.get("/analytics/{post_id}", response_class=HTMLResponse)
+async def post_analytics(request: Request, post_id: int):
+    require_auth(request)
+    user = get_current_user(request)
+    post = db.get_post(post_id)
+    
+    if not post or post['author'] != user:
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    analytics = db.get_post_analytics(post_id)
+    return templates.TemplateResponse("post_analytics.html", {"request": request, "post": post, "analytics": analytics, "user": user})

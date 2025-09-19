@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - Analytics{% endblock %}
+
+{% block content %}
+<a href="/analytics" class="back-link">← Back to Analytics</a>
+
+<h2 style="color: #2c3e50; margin-bottom: 20px;">📈 Post Analytics</h2>
+
+<div class="post" style="margin-bottom: 30px;">
+    <h3>{{ post.title }}</h3>
+    <div class="post-meta">Published: {{ post.created_at }}</div>
+</div>
+
+<!-- Analytics Overview -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+    <div style="text-align: center; padding: 25px; background: linear-gradient(145deg, #e3f2fd, #bbdefb); border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <div style="font-size: 3em; color: #1976d2;">{{ analytics.views }}</div>
+        <div style="color: #666; font-weight: 500;">👁️ Total Views</div>
+    </div>
+    <div style="text-align: center; padding: 25px; background: linear-gradient(145deg, #fce4ec, #f8bbd9); border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <div style="font-size: 3em; color: #c2185b;">{{ analytics.likes }}</div>
+        <div style="color: #666; font-weight: 500;">❤️ Total Likes</div>
+    </div>
+    <div style="text-align: center; padding: 25px; background: linear-gradient(145deg, #e8f5e8, #c8e6c9); border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <div style="font-size: 3em; color: #388e3c;">{{ analytics.comments }}</div>
+        <div style="color: #666; font-weight: 500;">💬 Total Comments</div>
+    </div>
+</div>
+
+<!-- Engagement Rate -->
+<div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 30px;">
+    <h3 style="color: #9b59b6; margin-bottom: 15px;">📊 Engagement Metrics</h3>
+    {% set engagement_rate = ((analytics.likes + analytics.comments) / analytics.views * 100) if analytics.views > 0 else 0 %}
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span>Engagement Rate:</span>
+        <span style="font-size: 1.2em; font-weight: bold; color: #27ae60;">{{ "%.1f"|format(engagement_rate) }}%</span>
+    </div>
+    <div style="background: #ecf0f1; height: 10px; border-radius: 5px; margin-top: 10px;">
+        <div style="background: linear-gradient(90deg, #27ae60, #2ecc71); height: 100%; width: {{ engagement_rate }}%; border-radius: 5px; transition: width 0.3s;"></div>
+    </div>
+</div>
+
+<!-- Who Liked This Post -->
+{% if analytics.liked_by %}
+<div style="background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+    <h3 style="color: #e74c3c; margin-bottom: 15px;">❤️ Liked By</h3>
+    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        {% for username in analytics.liked_by %}
+        <span style="background: #f8f9fa; padding: 5px 12px; border-radius: 20px; border: 1px solid #dee2e6; font-size: 0.9em;">{{ username }}</span>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}
